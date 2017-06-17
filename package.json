@@ -22,8 +22,12 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.24.1",
     "express": "^4.15.3",
+    "express-react-views": "^0.10.2",
+    "fs": "^0.0.1-security",
     "react": "^15.6.1",
+    "react-apollo": "^1.4.2",
     "react-dom": "^15.6.1",
+    "styled-components": "^2.1.0",
     "webpack": "^1.12.13"
   },
   "devDependencies": {
