@@ -8,6 +8,7 @@ class HelloMessage extends React.Component {
     return (
       <DefaultLayout title={this.props.title}>
         <div>Hello {this.props.name}</div>
+        <div>{this.props.readDB().a}</div>
       </DefaultLayout>
     );
   }
