@@ -59,7 +59,7 @@
 	_reactDom2.default.render(_react2.default.createElement(
 	  'h1',
 	  null,
-	  'Hello, world!'
+	  'Nong Ken Love Booky'
 	), document.getElementById('root'));
 
 /***/ }),
