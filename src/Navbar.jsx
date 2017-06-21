@@ -27,11 +27,17 @@ class Navbar extends Component {
         <NavbarItem onClick={() => this.props.setDisplay('home')}>
           Home
         </NavbarItem>
-        <NavbarItem onClick={() => this.props.setDisplay('home')}>
+        <NavbarItem onClick={() => this.props.setDisplay('calculate')}>
           Calculate Nutritions
         </NavbarItem>
         <NavbarItem onClick={() => this.props.setDisplay('ingredient')}>
           Add ingredients
+        </NavbarItem>
+        <NavbarItem onClick={() => this.props.setDisplay('unit')}>
+          Add units
+        </NavbarItem>
+        <NavbarItem onClick={() => this.props.setDisplay('category')}>
+          Add categories
         </NavbarItem>
       </NavbarContainer>
     )

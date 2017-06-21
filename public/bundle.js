@@ -26410,11 +26410,23 @@
 
 	var _Home2 = _interopRequireDefault(_Home);
 
-	var _Ingredients = __webpack_require__(224);
+	var _Calculate = __webpack_require__(224);
+
+	var _Calculate2 = _interopRequireDefault(_Calculate);
+
+	var _Ingredients = __webpack_require__(225);
 
 	var _Ingredients2 = _interopRequireDefault(_Ingredients);
 
-	var _Navbar = __webpack_require__(225);
+	var _Units = __webpack_require__(226);
+
+	var _Units2 = _interopRequireDefault(_Units);
+
+	var _Categories = __webpack_require__(227);
+
+	var _Categories2 = _interopRequireDefault(_Categories);
+
+	var _Navbar = __webpack_require__(228);
 
 	var _Navbar2 = _interopRequireDefault(_Navbar);
 
@@ -26463,7 +26475,16 @@
 	          this.state.display === 'home' && _react2.default.createElement(_Home2.default, { setDisplay: function setDisplay(display) {
 	              return _this2.setDisplay(display);
 	            } }),
+	          this.state.display === 'calculate' && _react2.default.createElement(_Calculate2.default, { setDisplay: function setDisplay(display) {
+	              return _this2.setDisplay(display);
+	            }, appUrl: this.props.appUrl }),
 	          this.state.display === 'ingredient' && _react2.default.createElement(_Ingredients2.default, { setDisplay: function setDisplay(display) {
+	              return _this2.setDisplay(display);
+	            }, appUrl: this.props.appUrl }),
+	          this.state.display === 'unit' && _react2.default.createElement(_Units2.default, { setDisplay: function setDisplay(display) {
+	              return _this2.setDisplay(display);
+	            }, appUrl: this.props.appUrl }),
+	          this.state.display === 'category' && _react2.default.createElement(_Categories2.default, { setDisplay: function setDisplay(display) {
 	              return _this2.setDisplay(display);
 	            }, appUrl: this.props.appUrl })
 	        )
@@ -26578,7 +26599,437 @@
 
 	var _templateObject = _taggedTemplateLiteral(['\n  display: flex;\n  flex-direction: column;\n'], ['\n  display: flex;\n  flex-direction: column;\n']),
 	    _templateObject2 = _taggedTemplateLiteral(['\n  display: flex;\n  padding: 8px;\n'], ['\n  display: flex;\n  padding: 8px;\n']),
-	    _templateObject3 = _taggedTemplateLiteral(['\n  flex-basis: 10%;\n'], ['\n  flex-basis: 10%;\n']),
+	    _templateObject3 = _taggedTemplateLiteral(['\n  width: 150px;\n'], ['\n  width: 150px;\n']),
+	    _templateObject4 = _taggedTemplateLiteral(['\n  width: 100%\n'], ['\n  width: 100%\n']),
+	    _templateObject5 = _taggedTemplateLiteral(['\n  margin-top: 30px;\n'], ['\n  margin-top: 30px;\n']),
+	    _templateObject6 = _taggedTemplateLiteral(['\n  display: flex;\n  justify-content: space-around;\n'], ['\n  display: flex;\n  justify-content: space-around;\n']),
+	    _templateObject7 = _taggedTemplateLiteral(['\n  flex-basis: 100%;\n  text-align: center;\n  border: 1px solid;\n'], ['\n  flex-basis: 100%;\n  text-align: center;\n  border: 1px solid;\n']);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _styledComponents = __webpack_require__(184);
+
+	var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+	var FormContainer = _styledComponents2.default.div(_templateObject);
+
+	var ItemContainer = _styledComponents2.default.div(_templateObject2);
+
+	var Item = _styledComponents2.default.div(_templateObject3);
+
+	var SelectCustomed = _styledComponents2.default.select(_templateObject4);
+
+	var Table = _styledComponents2.default.div(_templateObject5);
+
+	var TableRow = _styledComponents2.default.div(_templateObject6);
+
+	var TableItem = _styledComponents2.default.div(_templateObject7);
+
+	var Calculate = function (_Component) {
+	  _inherits(Calculate, _Component);
+
+	  function Calculate() {
+	    _classCallCheck(this, Calculate);
+
+	    var _this = _possibleConstructorReturn(this, (Calculate.__proto__ || Object.getPrototypeOf(Calculate)).call(this));
+
+	    _this.state = {
+	      selectCategory: -1,
+	      selectIngredient: { category: -1, ingredient: -1 },
+	      weight: 0,
+	      selectIngredients: [],
+	      summary: { carb: 0, protein: 0, fat: 0, cals: 0 },
+	      isSomethingWrong: false,
+	      fetchError: false,
+	      data: {}
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Calculate, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var _this2 = this;
+
+	      var headers = new Headers();
+	      headers.append('Content-Type', 'application/json');
+	      fetch(this.props.appUrl + '/api/getDB', { headers: headers, method: 'POST' }).then(function (response) {
+	        response.json().then(function (json) {
+	          _this2.setState({ data: json });
+	        }).catch(function (error) {
+	          _this2.setState({ fetchError: true });
+	        });
+	      }).catch(function (error) {
+	        _this2.setState({ fetchError: true });
+	      });
+	    }
+	  }, {
+	    key: 'setDataState',
+	    value: function setDataState(state, value) {
+	      var newState = {};
+	      newState[state] = value;
+	      this.setState(newState);
+	    }
+	  }, {
+	    key: 'setIngredient',
+	    value: function setIngredient(state, value) {
+	      var newState = {};
+	      newState[state] = JSON.parse(value);
+	      this.setState(newState);
+	    }
+	  }, {
+	    key: 'setCategory',
+	    value: function setCategory(state, value) {
+	      var newState = {};
+	      newState[state] = JSON.parse(value);
+	      newState.selectIngredient = { category: -1, ingredient: -1 };
+	      this.setState(newState);
+	    }
+	  }, {
+	    key: 'addIngredient',
+	    value: function addIngredient() {
+	      if (this.state.weight > 0 && this.state.selectIngredient.category !== -1 && this.state.selectIngredient.ingredient !== -1) {
+	        var newState = {};
+	        var summary = this.state.summary;
+	        newState.selectIngredients = this.state.selectIngredients;
+	        newState.selectIngredients.push({ ingredient: this.state.selectIngredient, weight: this.state.weight });
+
+	        summary.carb += this.state.data.ingredients[this.state.selectIngredient.category].children[this.state.selectIngredient.ingredient].carb * this.state.weight;
+	        summary.protein += this.state.data.ingredients[this.state.selectIngredient.category].children[this.state.selectIngredient.ingredient].protein * this.state.weight;
+	        summary.fat += this.state.data.ingredients[this.state.selectIngredient.category].children[this.state.selectIngredient.ingredient].fat * this.state.weight;
+	        summary.cals += this.state.data.ingredients[this.state.selectIngredient.category].children[this.state.selectIngredient.ingredient].calories * this.state.weight;
+
+	        newState.selectIngredients.summary = summary;
+	        this.setState(newState);
+	      }
+	    }
+	  }, {
+	    key: 'deleteIngredient',
+	    value: function deleteIngredient(index) {
+	      var newState = {};
+	      var summary = this.state.summary;
+	      newState.selectIngredients = this.state.selectIngredients;
+
+	      var removedIngredient = newState.selectIngredients.splice(index, 1);
+	      summary.carb -= this.state.data.ingredients[removedIngredient[0].ingredient.category].children[removedIngredient[0].ingredient.ingredient].carb * removedIngredient[0].weight;
+	      summary.protein -= this.state.data.ingredients[removedIngredient[0].ingredient.category].children[removedIngredient[0].ingredient.ingredient].protein * removedIngredient[0].weight;
+	      summary.fat -= this.state.data.ingredients[removedIngredient[0].ingredient.category].children[removedIngredient[0].ingredient.ingredient].fat * removedIngredient[0].weight;
+	      summary.cals -= this.state.data.ingredients[removedIngredient[0].ingredient.category].children[removedIngredient[0].ingredient.ingredient].calories * removedIngredient[0].weight;
+
+	      newState.selectIngredients.summary = summary;
+	      this.setState(newState);
+	    }
+	  }, {
+	    key: 'saveDB',
+	    value: function saveDB() {
+	      var _this3 = this;
+
+	      if (this.state.username === this.state.data.user.username && this.state.password === this.state.data.user.password) {
+	        var isNewDataIsCorrect = true;
+	        if (!this.state.category) isNewDataIsCorrect = false;
+	        if (!isNaN(this.state.category)) isNewDataIsCorrect = false;
+	        this.state.data.ingredients.forEach(function (category) {
+	          if (category.category === _this3.state.category) isNewDataIsCorrect = false;
+	        });
+
+	        if (isNewDataIsCorrect) {
+	          var newData = _extends({}, this.state.data);
+	          newData.ingredients.push({ category: this.state.category, children: [] });
+	          var headers = new Headers();
+	          headers.append('Content-Type', 'application/json');
+	          fetch(this.props.appUrl + '/api/saveDB?json=' + JSON.stringify(newData), { headers: headers, method: 'GET' }).then(function (response) {
+	            if (response.ok) _this3.props.setDisplay('home');else _this3.setState({ fetchError: true });
+	          }).catch(function (error) {
+	            _this3.setState({ fetchError: true });
+	          });
+	        } else this.setState({ isSomethingWrong: true });
+	      } else this.setState({ isSomethingWrong: true });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this4 = this;
+
+	      var ingredientList = [];
+	      this.state.data.ingredients && this.state.data.ingredients.forEach(function (category, categoryIndex) {
+	        if (_this4.state.selectCategory == -1 || _this4.state.selectCategory == categoryIndex) {
+	          category.children.forEach(function (ingredient, ingredientIndex) {
+	            ingredientList.push(_react2.default.createElement(
+	              'option',
+	              { key: '' + categoryIndex + ingredientIndex, value: JSON.stringify({ category: categoryIndex, ingredient: ingredientIndex }) },
+	              ingredient.name + ' ' + ingredient.unit
+	            ));
+	          });
+	        }
+	      });
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          'Calculate Nutritions'
+	        ),
+	        this.state.fetchError && _react2.default.createElement(
+	          'h1',
+	          null,
+	          'API error Please contact Nong Ken'
+	        ),
+	        _react2.default.createElement(
+	          FormContainer,
+	          null,
+	          _react2.default.createElement(
+	            ItemContainer,
+	            null,
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              'Category'
+	            ),
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement(
+	                SelectCustomed,
+	                { onChange: function onChange(e) {
+	                    return _this4.setCategory('selectCategory', e.target.value);
+	                  } },
+	                _react2.default.createElement(
+	                  'option',
+	                  { value: -1 },
+	                  'All'
+	                ),
+	                this.state.data.ingredients && this.state.data.ingredients.map(function (category, categoryIndex) {
+	                  return _react2.default.createElement(
+	                    'option',
+	                    { key: category.category, value: categoryIndex },
+	                    category.category
+	                  );
+	                })
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            ItemContainer,
+	            null,
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              'Ingredence'
+	            ),
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement(
+	                SelectCustomed,
+	                { onChange: function onChange(e) {
+	                    return _this4.setIngredient('selectIngredient', e.target.value);
+	                  }, value: JSON.stringify(this.state.selectIngredient) },
+	                _react2.default.createElement(
+	                  'option',
+	                  { value: JSON.stringify({ category: -1, ingredient: -1 }) },
+	                  'None'
+	                ),
+	                ingredientList
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            ItemContainer,
+	            null,
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              'Weight'
+	            ),
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement('input', { placeholder: 'Weight', type: 'text', onKeyUp: function onKeyUp(e) {
+	                  return _this4.setDataState('weight', e.target.value);
+	                } })
+	            )
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          this.state.isSomethingWrong && 'Something Wrong, You new Category is already exist or You username - password is wrong'
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: function onClick() {
+	                return _this4.addIngredient();
+	              } },
+	            'Add Ingredence'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          Table,
+	          null,
+	          _react2.default.createElement(
+	            TableRow,
+	            null,
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              'name'
+	            ),
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              'weight'
+	            ),
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              'carbohydrate'
+	            ),
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              'protein'
+	            ),
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              'fat'
+	            ),
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              'calories'
+	            ),
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              'Remove'
+	            )
+	          ),
+	          this.state.selectIngredients.map(function (ingredient, index) {
+	            return _react2.default.createElement(
+	              TableRow,
+	              { key: index },
+	              _react2.default.createElement(
+	                TableItem,
+	                null,
+	                _this4.state.data.ingredients[ingredient.ingredient.category].children[ingredient.ingredient.ingredient].name + ' ' + _this4.state.data.ingredients[ingredient.ingredient.category].children[ingredient.ingredient.ingredient].unit
+	              ),
+	              _react2.default.createElement(
+	                TableItem,
+	                null,
+	                ingredient.weight
+	              ),
+	              _react2.default.createElement(
+	                TableItem,
+	                null,
+	                (_this4.state.data.ingredients[ingredient.ingredient.category].children[ingredient.ingredient.ingredient].carb * ingredient.weight).toFixed(3)
+	              ),
+	              _react2.default.createElement(
+	                TableItem,
+	                null,
+	                (_this4.state.data.ingredients[ingredient.ingredient.category].children[ingredient.ingredient.ingredient].protein * ingredient.weight).toFixed(3)
+	              ),
+	              _react2.default.createElement(
+	                TableItem,
+	                null,
+	                (_this4.state.data.ingredients[ingredient.ingredient.category].children[ingredient.ingredient.ingredient].fat * ingredient.weight).toFixed(3)
+	              ),
+	              _react2.default.createElement(
+	                TableItem,
+	                null,
+	                (_this4.state.data.ingredients[ingredient.ingredient.category].children[ingredient.ingredient.ingredient].calories * ingredient.weight).toFixed(3)
+	              ),
+	              _react2.default.createElement(
+	                TableItem,
+	                null,
+	                _react2.default.createElement(
+	                  'button',
+	                  { onClick: function onClick() {
+	                      return _this4.deleteIngredient(index);
+	                    } },
+	                  'Remove'
+	                )
+	              )
+	            );
+	          }),
+	          _react2.default.createElement(
+	            TableRow,
+	            null,
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              'Summary'
+	            ),
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              '- -'
+	            ),
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              this.state.summary.carb.toFixed(3)
+	            ),
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              this.state.summary.protein.toFixed(3)
+	            ),
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              this.state.summary.fat.toFixed(3)
+	            ),
+	            _react2.default.createElement(
+	              TableItem,
+	              null,
+	              this.state.summary.cals.toFixed(3)
+	            ),
+	            _react2.default.createElement(TableItem, null)
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Calculate;
+	}(_react.Component);
+
+	exports.default = Calculate;
+
+/***/ }),
+/* 225 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _templateObject = _taggedTemplateLiteral(['\n  display: flex;\n  flex-direction: column;\n'], ['\n  display: flex;\n  flex-direction: column;\n']),
+	    _templateObject2 = _taggedTemplateLiteral(['\n  display: flex;\n  padding: 8px;\n'], ['\n  display: flex;\n  padding: 8px;\n']),
+	    _templateObject3 = _taggedTemplateLiteral(['\n  width: 150px;\n'], ['\n  width: 150px;\n']),
 	    _templateObject4 = _taggedTemplateLiteral(['\n  width: 100%\n'], ['\n  width: 100%\n']);
 
 	var _react = __webpack_require__(1);
@@ -26619,6 +27070,7 @@
 	      category: '',
 	      name: '',
 	      weight: '',
+	      unit: 'Gram',
 	      carb: '',
 	      protein: '',
 	      fat: '',
@@ -26654,7 +27106,6 @@
 	    value: function setDataState(state, value) {
 	      var newState = {};
 	      newState[state] = value;
-	      console.log(newState);
 	      this.setState(newState);
 	    }
 	  }, {
@@ -26664,23 +27115,29 @@
 
 	      if (this.state.username === this.state.data.user.username && this.state.password === this.state.data.user.password) {
 	        var isNewDataIsCorrect = true;
-	        if (!isNaN(this.state.category && !this.state.category)) isNewDataIsCorrect = false;
-	        if (!isNaN(this.state.name && !this.state.name)) isNewDataIsCorrect = false;
-	        if (isNaN(this.state.weight && !this.state.weight)) isNewDataIsCorrect = false;
-	        if (isNaN(this.state.carb && !this.state.carb)) isNewDataIsCorrect = false;
-	        if (isNaN(this.state.protein && !this.state.protein)) isNewDataIsCorrect = false;
-	        if (isNaN(this.state.fat && !this.state.fat)) isNewDataIsCorrect = false;
-	        if (isNaN(this.state.cals && !this.state.cals)) isNewDataIsCorrect = false;
+	        if (!this.state.category) isNewDataIsCorrect = false;
+	        if (!this.state.name) isNewDataIsCorrect = false;
+	        if (!this.state.unit) isNewDataIsCorrect = false;
+	        if (!+this.state.weight) isNewDataIsCorrect = false;
+
+	        if (!isNaN(this.state.category)) isNewDataIsCorrect = false;
+	        if (!isNaN(this.state.name)) isNewDataIsCorrect = false;
+	        if (!isNaN(this.state.unit)) isNewDataIsCorrect = false;
+	        if (isNaN(this.state.weight)) isNewDataIsCorrect = false;
+	        if (isNaN(this.state.carb)) isNewDataIsCorrect = false;
+	        if (isNaN(this.state.protein)) isNewDataIsCorrect = false;
+	        if (isNaN(this.state.fat)) isNewDataIsCorrect = false;
+	        if (isNaN(this.state.cals)) isNewDataIsCorrect = false;
 
 	        if (isNewDataIsCorrect) {
 	          var newData = _extends({}, this.state.data);
-	          console.log('asjdfnaksdfas', this.state);
 
-	          newData.ingredences = newData.ingredences.map(function (category, index) {
+	          newData.ingredients = newData.ingredients.map(function (category, index) {
 	            if (category.category === _this3.state.category) {
 	              var tempCategory = _extends({}, category);
 	              tempCategory.children.push({
 	                name: _this3.state.name,
+	                unit: _this3.state.unit,
 	                carb: +_this3.state.carb / +_this3.state.weight,
 	                fat: +_this3.state.fat / +_this3.state.weight,
 	                protein: +_this3.state.protein / +_this3.state.weight,
@@ -26705,14 +27162,13 @@
 	    value: function render() {
 	      var _this4 = this;
 
-	      console.log(this.state.data);
 	      return _react2.default.createElement(
 	        'div',
 	        null,
 	        _react2.default.createElement(
 	          'h1',
 	          null,
-	          'Add Ingredences'
+	          'Add ingredients'
 	        ),
 	        this.state.fetchError && _react2.default.createElement(
 	          'h1',
@@ -26743,10 +27199,10 @@
 	                  { value: '' },
 	                  ''
 	                ),
-	                this.state.data.ingredences && this.state.data.ingredences.map(function (category) {
+	                this.state.data.ingredients && this.state.data.ingredients.map(function (category) {
 	                  return _react2.default.createElement(
 	                    'option',
-	                    { key: 'category.category', value: category.category },
+	                    { key: category.category, value: category.category },
 	                    category.category
 	                  );
 	                })
@@ -26758,7 +27214,9 @@
 	              ' Not found Category that you want please ',
 	              _react2.default.createElement(
 	                'button',
-	                null,
+	                { onClick: function onClick() {
+	                    return _this4.props.setDisplay('category');
+	                  } },
 	                'Add More Category'
 	              )
 	            )
@@ -26795,9 +27253,33 @@
 	                } })
 	            ),
 	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement(
+	                SelectCustomed,
+	                { name: 'unit', onChange: function onChange(e) {
+	                    return _this4.setDataState('unit', e.target.value);
+	                  } },
+	                this.state.data.units && this.state.data.units.map(function (unit) {
+	                  return _react2.default.createElement(
+	                    'option',
+	                    { key: unit, value: unit },
+	                    unit
+	                  );
+	                })
+	              )
+	            ),
+	            _react2.default.createElement(
 	              'div',
 	              null,
-	              '* Only g(Gram) Units'
+	              ' Not found Unit that you want please ',
+	              _react2.default.createElement(
+	                'button',
+	                { onClick: function onClick() {
+	                    return _this4.props.setDisplay('unit');
+	                  } },
+	                'Add More Unit'
+	              )
 	            )
 	          ),
 	          _react2.default.createElement(
@@ -26938,7 +27420,471 @@
 	exports.default = Ingredients;
 
 /***/ }),
-/* 225 */
+/* 226 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _templateObject = _taggedTemplateLiteral(['\n  display: flex;\n  flex-direction: column;\n'], ['\n  display: flex;\n  flex-direction: column;\n']),
+	    _templateObject2 = _taggedTemplateLiteral(['\n  display: flex;\n  padding: 8px;\n'], ['\n  display: flex;\n  padding: 8px;\n']),
+	    _templateObject3 = _taggedTemplateLiteral(['\n  width: 150px;\n'], ['\n  width: 150px;\n']),
+	    _templateObject4 = _taggedTemplateLiteral(['\n  width: 100%\n'], ['\n  width: 100%\n']);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _styledComponents = __webpack_require__(184);
+
+	var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+	var FormContainer = _styledComponents2.default.div(_templateObject);
+
+	var ItemContainer = _styledComponents2.default.div(_templateObject2);
+
+	var Item = _styledComponents2.default.div(_templateObject3);
+
+	var SelectCustomed = _styledComponents2.default.select(_templateObject4);
+
+	var Units = function (_Component) {
+	  _inherits(Units, _Component);
+
+	  function Units() {
+	    _classCallCheck(this, Units);
+
+	    var _this = _possibleConstructorReturn(this, (Units.__proto__ || Object.getPrototypeOf(Units)).call(this));
+
+	    _this.state = {
+	      unit: '',
+	      username: '',
+	      password: '',
+	      isSomethingWrong: false,
+	      fetchError: false,
+	      data: {}
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Units, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var _this2 = this;
+
+	      var headers = new Headers();
+	      headers.append('Content-Type', 'application/json');
+	      fetch(this.props.appUrl + '/api/getDB', { headers: headers, method: 'POST' }).then(function (response) {
+	        response.json().then(function (json) {
+	          _this2.setState({ data: json });
+	        }).catch(function (error) {
+	          _this2.setState({ fetchError: true });
+	        });
+	      }).catch(function (error) {
+	        _this2.setState({ fetchError: true });
+	      });
+	    }
+	  }, {
+	    key: 'setDataState',
+	    value: function setDataState(state, value) {
+	      var newState = {};
+	      newState[state] = value;
+	      this.setState(newState);
+	    }
+	  }, {
+	    key: 'saveDB',
+	    value: function saveDB() {
+	      var _this3 = this;
+
+	      if (this.state.username === this.state.data.user.username && this.state.password === this.state.data.user.password) {
+	        var isNewDataIsCorrect = true;
+	        if (!this.state.unit) isNewDataIsCorrect = false;
+	        if (!isNaN(this.state.unit)) isNewDataIsCorrect = false;
+	        if (this.state.data.units.includes(this.state.unit)) isNewDataIsCorrect = false;
+
+	        if (isNewDataIsCorrect) {
+	          var newData = _extends({}, this.state.data);
+	          newData.units.push(this.state.unit);
+	          var headers = new Headers();
+	          headers.append('Content-Type', 'application/json');
+	          fetch(this.props.appUrl + '/api/saveDB?json=' + JSON.stringify(newData), { headers: headers, method: 'GET' }).then(function (response) {
+	            if (response.ok) _this3.props.setDisplay('home');else _this3.setState({ fetchError: true });
+	          }).catch(function (error) {
+	            _this3.setState({ fetchError: true });
+	          });
+	        } else this.setState({ isSomethingWrong: true });
+	      } else this.setState({ isSomethingWrong: true });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this4 = this;
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          'Add Units'
+	        ),
+	        this.state.fetchError && _react2.default.createElement(
+	          'h1',
+	          null,
+	          'API error Please contact Nong Ken'
+	        ),
+	        _react2.default.createElement(
+	          FormContainer,
+	          null,
+	          _react2.default.createElement(
+	            ItemContainer,
+	            null,
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              'This is an existing Unit'
+	            ),
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement(
+	                SelectCustomed,
+	                null,
+	                this.state.data.units && this.state.data.units.map(function (unit) {
+	                  return _react2.default.createElement(
+	                    'option',
+	                    { key: unit, value: unit.toLowerCase() },
+	                    unit
+	                  );
+	                })
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            ItemContainer,
+	            null,
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              'Insert new Unit'
+	            ),
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement('input', { placeholder: 'unit', type: 'text', onKeyUp: function onKeyUp(e) {
+	                  return _this4.setDataState('unit', e.target.value);
+	                } })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            ItemContainer,
+	            null,
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              'Username'
+	            ),
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement('input', { placeholder: 'Username', type: 'text', onKeyUp: function onKeyUp(e) {
+	                  return _this4.setDataState('username', e.target.value);
+	                } })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            ItemContainer,
+	            null,
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              'password'
+	            ),
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement('input', { placeholder: 'Password', type: 'password', onKeyUp: function onKeyUp(e) {
+	                  return _this4.setDataState('password', e.target.value);
+	                } })
+	            )
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          this.state.isSomethingWrong && 'Something Wrong, You new Unit is already exist or You username - password is wrong'
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: function onClick() {
+	                return _this4.saveDB();
+	              } },
+	            'Add Ingredence'
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Units;
+	}(_react.Component);
+
+	exports.default = Units;
+
+/***/ }),
+/* 227 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _templateObject = _taggedTemplateLiteral(['\n  display: flex;\n  flex-direction: column;\n'], ['\n  display: flex;\n  flex-direction: column;\n']),
+	    _templateObject2 = _taggedTemplateLiteral(['\n  display: flex;\n  padding: 8px;\n'], ['\n  display: flex;\n  padding: 8px;\n']),
+	    _templateObject3 = _taggedTemplateLiteral(['\n  width: 150px;\n'], ['\n  width: 150px;\n']),
+	    _templateObject4 = _taggedTemplateLiteral(['\n  width: 100%\n'], ['\n  width: 100%\n']);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _styledComponents = __webpack_require__(184);
+
+	var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+	var FormContainer = _styledComponents2.default.div(_templateObject);
+
+	var ItemContainer = _styledComponents2.default.div(_templateObject2);
+
+	var Item = _styledComponents2.default.div(_templateObject3);
+
+	var SelectCustomed = _styledComponents2.default.select(_templateObject4);
+
+	var Categories = function (_Component) {
+	  _inherits(Categories, _Component);
+
+	  function Categories() {
+	    _classCallCheck(this, Categories);
+
+	    var _this = _possibleConstructorReturn(this, (Categories.__proto__ || Object.getPrototypeOf(Categories)).call(this));
+
+	    _this.state = {
+	      category: '',
+	      username: '',
+	      password: '',
+	      isSomethingWrong: false,
+	      fetchError: false,
+	      data: {}
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Categories, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var _this2 = this;
+
+	      var headers = new Headers();
+	      headers.append('Content-Type', 'application/json');
+	      fetch(this.props.appUrl + '/api/getDB', { headers: headers, method: 'POST' }).then(function (response) {
+	        response.json().then(function (json) {
+	          _this2.setState({ data: json });
+	        }).catch(function (error) {
+	          _this2.setState({ fetchError: true });
+	        });
+	      }).catch(function (error) {
+	        _this2.setState({ fetchError: true });
+	      });
+	    }
+	  }, {
+	    key: 'setDataState',
+	    value: function setDataState(state, value) {
+	      var newState = {};
+	      newState[state] = value;
+	      this.setState(newState);
+	    }
+	  }, {
+	    key: 'saveDB',
+	    value: function saveDB() {
+	      var _this3 = this;
+
+	      if (this.state.username === this.state.data.user.username && this.state.password === this.state.data.user.password) {
+	        var isNewDataIsCorrect = true;
+	        if (!this.state.category) isNewDataIsCorrect = false;
+	        if (!isNaN(this.state.category)) isNewDataIsCorrect = false;
+	        this.state.data.ingredients.forEach(function (category) {
+	          if (category.category === _this3.state.category) isNewDataIsCorrect = false;
+	        });
+
+	        if (isNewDataIsCorrect) {
+	          var newData = _extends({}, this.state.data);
+	          newData.ingredients.push({ category: this.state.category, children: [] });
+	          var headers = new Headers();
+	          headers.append('Content-Type', 'application/json');
+	          fetch(this.props.appUrl + '/api/saveDB?json=' + JSON.stringify(newData), { headers: headers, method: 'GET' }).then(function (response) {
+	            if (response.ok) _this3.props.setDisplay('home');else _this3.setState({ fetchError: true });
+	          }).catch(function (error) {
+	            _this3.setState({ fetchError: true });
+	          });
+	        } else this.setState({ isSomethingWrong: true });
+	      } else this.setState({ isSomethingWrong: true });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this4 = this;
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          'Add Categories'
+	        ),
+	        this.state.fetchError && _react2.default.createElement(
+	          'h1',
+	          null,
+	          'API error Please contact Nong Ken'
+	        ),
+	        _react2.default.createElement(
+	          FormContainer,
+	          null,
+	          _react2.default.createElement(
+	            ItemContainer,
+	            null,
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              'This is an existing Category'
+	            ),
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement(
+	                SelectCustomed,
+	                null,
+	                this.state.data.ingredients && this.state.data.ingredients.map(function (category) {
+	                  return _react2.default.createElement(
+	                    'option',
+	                    { key: category.category, value: category.category },
+	                    category.category
+	                  );
+	                })
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            ItemContainer,
+	            null,
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              'Insert new Category'
+	            ),
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement('input', { placeholder: 'category', type: 'text', onKeyUp: function onKeyUp(e) {
+	                  return _this4.setDataState('category', e.target.value);
+	                } })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            ItemContainer,
+	            null,
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              'Username'
+	            ),
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement('input', { placeholder: 'Username', type: 'text', onKeyUp: function onKeyUp(e) {
+	                  return _this4.setDataState('username', e.target.value);
+	                } })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            ItemContainer,
+	            null,
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              'password'
+	            ),
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement('input', { placeholder: 'Password', type: 'password', onKeyUp: function onKeyUp(e) {
+	                  return _this4.setDataState('password', e.target.value);
+	                } })
+	            )
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          this.state.isSomethingWrong && 'Something Wrong, You new Category is already exist or You username - password is wrong'
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: function onClick() {
+	                return _this4.saveDB();
+	              } },
+	            'Add Ingredence'
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Categories;
+	}(_react.Component);
+
+	exports.default = Categories;
+
+/***/ }),
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27008,7 +27954,7 @@
 	        _react2.default.createElement(
 	          NavbarItem,
 	          { onClick: function onClick() {
-	              return _this2.props.setDisplay('home');
+	              return _this2.props.setDisplay('calculate');
 	            } },
 	          'Calculate Nutritions'
 	        ),
@@ -27018,6 +27964,20 @@
 	              return _this2.props.setDisplay('ingredient');
 	            } },
 	          'Add ingredients'
+	        ),
+	        _react2.default.createElement(
+	          NavbarItem,
+	          { onClick: function onClick() {
+	              return _this2.props.setDisplay('unit');
+	            } },
+	          'Add units'
+	        ),
+	        _react2.default.createElement(
+	          NavbarItem,
+	          { onClick: function onClick() {
+	              return _this2.props.setDisplay('category');
+	            } },
+	          'Add categories'
 	        )
 	      );
 	    }

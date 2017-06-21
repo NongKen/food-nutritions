@@ -12,7 +12,7 @@ const ItemContainer = styled.div`
 `
 
 const Item = styled.div`
-  flex-basis: 10%;
+  width: 150px;
 `
 
 const SelectCustomed = styled.select`
@@ -26,6 +26,7 @@ class Ingredients extends Component {
       category: '',
       name: '',
       weight: '',
+      unit: 'Gram',
       carb: '',
       protein: '',
       fat: '',
@@ -59,30 +60,36 @@ class Ingredients extends Component {
   setDataState(state, value) {
     const newState = {}
     newState[state] = value
-    console.log(newState)
     this.setState(newState)
   }
 
   saveDB() {
     if (this.state.username === this.state.data.user.username && this.state.password === this.state.data.user.password) {
       let isNewDataIsCorrect = true
-      if (!isNaN(this.state.category && !this.state.category)) isNewDataIsCorrect = false
-      if (!isNaN(this.state.name && !this.state.name)) isNewDataIsCorrect = false
-      if (isNaN(this.state.weight && !this.state.weight)) isNewDataIsCorrect = false
-      if (isNaN(this.state.carb && !this.state.carb)) isNewDataIsCorrect = false
-      if (isNaN(this.state.protein && !this.state.protein)) isNewDataIsCorrect = false
-      if (isNaN(this.state.fat && !this.state.fat)) isNewDataIsCorrect = false
-      if (isNaN(this.state.cals && !this.state.cals)) isNewDataIsCorrect = false
+      if (!this.state.category) isNewDataIsCorrect = false
+      if (!this.state.name) isNewDataIsCorrect = false
+      if (!this.state.unit) isNewDataIsCorrect = false
+      if (!(+this.state.weight)) isNewDataIsCorrect = false
+
+      if (!isNaN(this.state.category)) isNewDataIsCorrect = false
+      if (!isNaN(this.state.name)) isNewDataIsCorrect = false
+      if (!isNaN(this.state.unit)) isNewDataIsCorrect = false
+      if (isNaN(this.state.weight)) isNewDataIsCorrect = false
+      if (isNaN(this.state.carb)) isNewDataIsCorrect = false
+      if (isNaN(this.state.protein)) isNewDataIsCorrect = false
+      if (isNaN(this.state.fat)) isNewDataIsCorrect = false
+      if (isNaN(this.state.cals)) isNewDataIsCorrect = false
+      
 
       if (isNewDataIsCorrect) {
         const newData = { ...this.state.data }
-        console.log('asjdfnaksdfas', this.state)
-
-        newData.ingredences = newData.ingredences.map((category, index) => {
+        
+        newData.ingredients = newData.ingredients.map((category, index) => {
           if (category.category === this.state.category) {
             const tempCategory = {...category}
             tempCategory.children.push({
               name: this.state.name,
+              unit: this.state.unit,
               carb: (+this.state.carb / +this.state.weight),
               fat: (+this.state.fat / +this.state.weight),
               protein: (+this.state.protein / +this.state.weight),
@@ -109,10 +116,9 @@ class Ingredients extends Component {
   }
 
   render() {
-    console.log(this.state.data )
     return (
       <div>
-        <h1>Add Ingredences</h1>
+        <h1>Add ingredients</h1>
         {
           this.state.fetchError && <h1>API error Please contact Nong Ken</h1>
         }
@@ -125,9 +131,9 @@ class Ingredients extends Component {
               <SelectCustomed name="category" onChange={(e) => this.setDataState('category', e.target.value)}>
                 <option value={''}>{''}</option>
                 {
-                  this.state.data.ingredences && this.state.data.ingredences.map(category => {
+                  this.state.data.ingredients && this.state.data.ingredients.map(category => {
                     return (
-                      <option key={'category.category'} value={category.category}>{category.category}</option>
+                      <option key={category.category} value={category.category}>{category.category}</option>
                     )
                   })
                 }
@@ -135,7 +141,7 @@ class Ingredients extends Component {
             </Item>
             <div>
               {' Not found Category that you want please '}
-              <button>
+              <button onClick={() => this.props.setDisplay('category')}>
                 Add More Category
               </button>
             </div>
@@ -155,8 +161,22 @@ class Ingredients extends Component {
             <Item>
               <input placeholder={'Weight'} type="text" onKeyUp={(e) => this.setDataState('weight', e.target.value)}/>
             </Item>
+            <Item>
+              <SelectCustomed name="unit" onChange={(e) => this.setDataState('unit', e.target.value)}>
+                {
+                  this.state.data.units && this.state.data.units.map(unit => {
+                    return (
+                      <option key={unit} value={unit}>{unit}</option>
+                    )
+                  })
+                }
+              </SelectCustomed>
+            </Item>
             <div>
-              * Only g(Gram) Units
+              {' Not found Unit that you want please '}
+              <button onClick={() => this.props.setDisplay('unit')}>
+                Add More Unit
+              </button>
             </div>
           </ItemContainer>
           <ItemContainer>

@@ -13,9 +13,9 @@ class Home extends React.Component {
         <a href="/calculate">
           <button href={'/calculate'}>Go Calculate</button>
         </a>
-        <button href={'/ingredence'}>Add Ingredences</button>
+        <button href={'/ingredence'}>Add ingredients</button>
         <div>{this.props.readDB().a}</div>
-        <div>{this.props.readDB().ingredences[0].name}</div>
+        <div>{this.props.readDB().ingredients[0].name}</div>
       </DefaultLayout>
     );
   }
