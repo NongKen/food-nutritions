@@ -68,7 +68,7 @@
 
 	function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-	var appUrl = 'https://booky-program.herokuapp.com/';
+	var appUrl = 'https://booky-program.herokuapp.com';
 
 	(0, _styledComponents.injectGlobal)(_templateObject);
 
@@ -26665,7 +26665,7 @@
 
 	      var headers = new Headers();
 	      headers.append('Content-Type', 'application/json');
-	      fetch(this.props.appUrl + '/api/getDB', { headers: headers, method: 'POST' }).then(function (response) {
+	      fetch(this.props.appUrl + '/api/getDB', { headers: headers, method: 'GET' }).then(function (response) {
 	        response.json().then(function (json) {
 	          _this2.setState({ data: json });
 	        }).catch(function (error) {
@@ -27091,7 +27091,7 @@
 
 	      var headers = new Headers();
 	      headers.append('Content-Type', 'application/json');
-	      fetch(this.props.appUrl + '/api/getDB', { headers: headers, method: 'POST' }).then(function (response) {
+	      fetch(this.props.appUrl + '/api/getDB', { headers: headers, method: 'GET' }).then(function (response) {
 	        response.json().then(function (json) {
 	          _this2.setState({ data: json });
 	        }).catch(function (error) {
@@ -27490,7 +27490,7 @@
 
 	      var headers = new Headers();
 	      headers.append('Content-Type', 'application/json');
-	      fetch(this.props.appUrl + '/api/getDB', { headers: headers, method: 'POST' }).then(function (response) {
+	      fetch(this.props.appUrl + '/api/getDB', { headers: headers, method: 'GET' }).then(function (response) {
 	        response.json().then(function (json) {
 	          _this2.setState({ data: json });
 	        }).catch(function (error) {
@@ -27721,7 +27721,7 @@
 
 	      var headers = new Headers();
 	      headers.append('Content-Type', 'application/json');
-	      fetch(this.props.appUrl + '/api/getDB', { headers: headers, method: 'POST' }).then(function (response) {
+	      fetch(this.props.appUrl + '/api/getDB', { headers: headers, method: 'GET' }).then(function (response) {
 	        response.json().then(function (json) {
 	          _this2.setState({ data: json });
 	        }).catch(function (error) {
