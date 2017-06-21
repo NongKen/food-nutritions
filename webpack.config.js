@@ -1,5 +1,5 @@
 module.exports = {
-  entry: './src/client.js',
+  entry: './src/client.jsx',
   output: {
     path: './public',
     filename: 'bundle.js'       
@@ -7,13 +7,16 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.js$/,
+        test: /\.jsx$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015', 'react']
+        }
       }
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.json'] 
+    extensions: ['', '.js', '.jsx', '.json'] 
   }
 }

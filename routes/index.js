@@ -8,10 +8,12 @@ const writeDB = () => {
 
 }
 
-exports.index = function(req, res){
+const home = (req, res) => {
   res.render('index', {
     name: 'ken',
     readDB,
     writeDB
-  });
-};
+  })
+}
+
+export {home}

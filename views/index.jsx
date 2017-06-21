@@ -1,17 +1,24 @@
-var React = require('react');
-var DefaultLayout = require('./layouts/default');
+import React from 'react'
+import DefaultLayout from './layouts/default'
+import styled, {injectGlobal} from 'styled-components'
 
-class HelloMessage extends React.Component {
+import { Text } from './Base'
+
+class Home extends React.Component {
   render() {
-    console.log('eiei', this.props.readDB())
-    
     return (
       <DefaultLayout title={this.props.title}>
-        <div>Hello {this.props.name}</div>
+        <Text>{'Test'}</Text>
+        <h1>Welcome to Booky calculate food program</h1>
+        <a href="/calculate">
+          <button href={'/calculate'}>Go Calculate</button>
+        </a>
+        <button href={'/ingredence'}>Add Ingredences</button>
         <div>{this.props.readDB().a}</div>
+        <div>{this.props.readDB().ingredences[0].name}</div>
       </DefaultLayout>
     );
   }
 }
 
-module.exports = HelloMessage;
+module.exports = Home;

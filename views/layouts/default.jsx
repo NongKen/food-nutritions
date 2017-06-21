@@ -1,14 +1,17 @@
-var React = require('react');
+import React from 'react'
+import styled from 'styled-components'
 
-class DefaultLayout extends React.Component {
-  render() {
-    return (
-      <html>
-        <head><title>{this.props.title}</title></head>
-        <body>{this.props.children}</body>
-      </html>
-    );
-  }
+const Body = styled.body`
+  margin: 0;
+`
+
+const DefaultLayout = (props) => {
+  return (
+    <html>
+      <head><title>{props.title}</title></head>
+      <Body>{props.children}</Body>
+    </html>
+  )
 }
 
-module.exports = DefaultLayout;
+export default DefaultLayout
