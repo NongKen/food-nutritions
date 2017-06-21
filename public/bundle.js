@@ -68,7 +68,7 @@
 
 	function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-	var appUrl = 'http://localhost:3000';
+	var appUrl = 'https://booky-program.herokuapp.com/';
 
 	(0, _styledComponents.injectGlobal)(_templateObject);
 
