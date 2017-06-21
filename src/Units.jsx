@@ -35,7 +35,7 @@ class Units extends Component {
   componentWillMount() {
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
-    fetch(`${this.props.appUrl}/api/getDB`, { headers, method: 'POST' })
+    fetch(`${this.props.appUrl}/api/getDB`, { headers, method: 'GET'})
     .then((response) => {
       response.json()
       .then((json) => {
