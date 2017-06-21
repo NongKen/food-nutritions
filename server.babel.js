@@ -47,7 +47,7 @@ app.get('/api/ken/downloadDB', (req, res) => {
   filestream.pipe(res);
 })
 
-app.get('/api/getDB', (req, res) => {
+app.post('/api/getDB', (req, res) => {
 	const db = JSON.parse(fs.readFileSync('bookyDB.json'))
 	res.status(200).json(db)
 })
