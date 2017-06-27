@@ -57,29 +57,26 @@ class Categories extends Component {
   }
 
   saveDB() {
-    if (this.state.username === this.state.data.user.username && this.state.password === this.state.data.user.password) {
-      let isNewDataIsCorrect = true
-      if (!this.state.category) isNewDataIsCorrect = false
-      if (!isNaN(this.state.category)) isNewDataIsCorrect = false
-      this.state.data.ingredients.forEach((category) => {
-        if (category.category === this.state.category) isNewDataIsCorrect = false
-      })
+    let isNewDataIsCorrect = true
+    if (!this.state.category) isNewDataIsCorrect = false
+    if (!isNaN(this.state.category)) isNewDataIsCorrect = false
+    this.state.data.ingredients.forEach((category) => {
+      if (category.category === this.state.category) isNewDataIsCorrect = false
+    })
 
-      if (isNewDataIsCorrect) {
-        const newData = { ...this.state.data }
-        newData.ingredients.push({category: this.state.category, children: []})
-        const headers = new Headers()
-        headers.append('Content-Type', 'application/json')
-        fetch(`${this.props.appUrl}/api/saveDB?json=${JSON.stringify(newData)}`, { headers, method: 'GET' })
-        .then((response) => {
-          if(response.ok) this.props.setDisplay('home')
-          else this.setState({fetchError: true})
-        })
-        .catch((error) => {
-          this.setState({fetchError: true})
-        })
-      }
-      else this.setState({isSomethingWrong: true})
+    if (isNewDataIsCorrect) {
+      const newData = { ...this.state.data }
+      newData.ingredients.push({category: this.state.category, children: []})
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      fetch(`${this.props.appUrl}/api/saveDB?json=${JSON.stringify(newData)}`, { headers, method: 'GET' })
+      .then((response) => {
+        if(response.ok) this.props.setDisplay('home')
+        else this.setState({fetchError: true})
+      })
+      .catch((error) => {
+        this.setState({fetchError: true})
+      })
     }
     else this.setState({isSomethingWrong: true})
   }
@@ -114,22 +111,6 @@ class Categories extends Component {
             </Item>
             <Item>
               <input placeholder={'category'} type="text" onKeyUp={(e) => this.setDataState('category', e.target.value)}/>
-            </Item>
-          </ItemContainer>
-          <ItemContainer>
-            <Item>
-              Username
-            </Item>
-            <Item>
-              <input placeholder={'Username'} type="text" onKeyUp={(e) => this.setDataState('username', e.target.value)}/>
-            </Item>
-          </ItemContainer>
-          <ItemContainer>
-            <Item>
-              password
-            </Item>
-            <Item>
-              <input placeholder={'Password'} type="password" onKeyUp={(e) => this.setDataState('password', e.target.value)}/>
             </Item>
           </ItemContainer>
         </FormContainer>

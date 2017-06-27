@@ -57,27 +57,24 @@ class Units extends Component {
   }
 
   saveDB() {
-    if (this.state.username === this.state.data.user.username && this.state.password === this.state.data.user.password) {
-      let isNewDataIsCorrect = true
-      if (!this.state.unit) isNewDataIsCorrect = false
-      if (!isNaN(this.state.unit)) isNewDataIsCorrect = false
-      if (this.state.data.units.includes(this.state.unit)) isNewDataIsCorrect = false
+    let isNewDataIsCorrect = true
+    if (!this.state.unit) isNewDataIsCorrect = false
+    if (!isNaN(this.state.unit)) isNewDataIsCorrect = false
+    if (this.state.data.units.includes(this.state.unit)) isNewDataIsCorrect = false
 
-      if (isNewDataIsCorrect) {
-        const newData = { ...this.state.data }
-        newData.units.push(this.state.unit)
-        const headers = new Headers()
-        headers.append('Content-Type', 'application/json')
-        fetch(`${this.props.appUrl}/api/saveDB?json=${JSON.stringify(newData)}`, { headers, method: 'GET' })
-        .then((response) => {
-          if(response.ok) this.props.setDisplay('home')
-          else this.setState({fetchError: true})
-        })
-        .catch((error) => {
-          this.setState({fetchError: true})
-        })
-      }
-      else this.setState({isSomethingWrong: true})
+    if (isNewDataIsCorrect) {
+      const newData = { ...this.state.data }
+      newData.units.push(this.state.unit)
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      fetch(`${this.props.appUrl}/api/saveDB?json=${JSON.stringify(newData)}`, { headers, method: 'GET' })
+      .then((response) => {
+        if(response.ok) this.props.setDisplay('home')
+        else this.setState({fetchError: true})
+      })
+      .catch((error) => {
+        this.setState({fetchError: true})
+      })
     }
     else this.setState({isSomethingWrong: true})
   }
@@ -112,22 +109,6 @@ class Units extends Component {
             </Item>
             <Item>
               <input placeholder={'unit'} type="text" onKeyUp={(e) => this.setDataState('unit', e.target.value)}/>
-            </Item>
-          </ItemContainer>
-          <ItemContainer>
-            <Item>
-              Username
-            </Item>
-            <Item>
-              <input placeholder={'Username'} type="text" onKeyUp={(e) => this.setDataState('username', e.target.value)}/>
-            </Item>
-          </ItemContainer>
-          <ItemContainer>
-            <Item>
-              password
-            </Item>
-            <Item>
-              <input placeholder={'Password'} type="password" onKeyUp={(e) => this.setDataState('password', e.target.value)}/>
             </Item>
           </ItemContainer>
         </FormContainer>

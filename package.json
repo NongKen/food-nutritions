@@ -4,9 +4,9 @@
   "description": "for booky",
   "main": "index.js",
   "scripts": {
-    "webpack-watch": "webpack -w",
-    "express-server": "node ./server",
-    "start": "concurrently --kill-others \"npm run webpack-watch\" \"npm run express-server\"",
+    "start": "node ./server",
+    "build": "webpack -w",
+    "dev": "concurrently --kill-others \"npm run build\" \"npm run start\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

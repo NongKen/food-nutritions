@@ -68,7 +68,7 @@
 
 	function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-	var appUrl = 'https://booky-program.herokuapp.com';
+	var appUrl = 'http://localhost:3000';
 
 	(0, _styledComponents.injectGlobal)(_templateObject);
 
@@ -27113,48 +27113,46 @@
 	    value: function saveDB() {
 	      var _this3 = this;
 
-	      if (this.state.username === this.state.data.user.username && this.state.password === this.state.data.user.password) {
-	        var isNewDataIsCorrect = true;
-	        if (!this.state.category) isNewDataIsCorrect = false;
-	        if (!this.state.name) isNewDataIsCorrect = false;
-	        if (!this.state.unit) isNewDataIsCorrect = false;
-	        if (!+this.state.weight) isNewDataIsCorrect = false;
+	      var isNewDataIsCorrect = true;
+	      if (!this.state.category) isNewDataIsCorrect = false;
+	      if (!this.state.name) isNewDataIsCorrect = false;
+	      if (!this.state.unit) isNewDataIsCorrect = false;
+	      if (!+this.state.weight) isNewDataIsCorrect = false;
 
-	        if (!isNaN(this.state.category)) isNewDataIsCorrect = false;
-	        if (!isNaN(this.state.name)) isNewDataIsCorrect = false;
-	        if (!isNaN(this.state.unit)) isNewDataIsCorrect = false;
-	        if (isNaN(this.state.weight)) isNewDataIsCorrect = false;
-	        if (isNaN(this.state.carb)) isNewDataIsCorrect = false;
-	        if (isNaN(this.state.protein)) isNewDataIsCorrect = false;
-	        if (isNaN(this.state.fat)) isNewDataIsCorrect = false;
-	        if (isNaN(this.state.cals)) isNewDataIsCorrect = false;
+	      if (!isNaN(this.state.category)) isNewDataIsCorrect = false;
+	      if (!isNaN(this.state.name)) isNewDataIsCorrect = false;
+	      if (!isNaN(this.state.unit)) isNewDataIsCorrect = false;
+	      if (isNaN(this.state.weight)) isNewDataIsCorrect = false;
+	      if (isNaN(this.state.carb)) isNewDataIsCorrect = false;
+	      if (isNaN(this.state.protein)) isNewDataIsCorrect = false;
+	      if (isNaN(this.state.fat)) isNewDataIsCorrect = false;
+	      if (isNaN(this.state.cals)) isNewDataIsCorrect = false;
 
-	        if (isNewDataIsCorrect) {
-	          var newData = _extends({}, this.state.data);
+	      if (isNewDataIsCorrect) {
+	        var newData = _extends({}, this.state.data);
 
-	          newData.ingredients = newData.ingredients.map(function (category, index) {
-	            if (category.category === _this3.state.category) {
-	              var tempCategory = _extends({}, category);
-	              tempCategory.children.push({
-	                name: _this3.state.name,
-	                unit: _this3.state.unit,
-	                carb: +_this3.state.carb / +_this3.state.weight,
-	                fat: +_this3.state.fat / +_this3.state.weight,
-	                protein: +_this3.state.protein / +_this3.state.weight,
-	                calories: +_this3.state.cals / +_this3.state.weight
-	              });
-	              return tempCategory;
-	            }
-	            return category;
-	          });
-	          var headers = new Headers();
-	          headers.append('Content-Type', 'application/json');
-	          fetch(this.props.appUrl + '/api/saveDB?json=' + JSON.stringify(newData), { headers: headers, method: 'GET' }).then(function (response) {
-	            if (response.ok) _this3.props.setDisplay('home');else _this3.setState({ fetchError: true });
-	          }).catch(function (error) {
-	            _this3.setState({ fetchError: true });
-	          });
-	        } else this.setState({ isSomethingWrong: true });
+	        newData.ingredients = newData.ingredients.map(function (category, index) {
+	          if (category.category === _this3.state.category) {
+	            var tempCategory = _extends({}, category);
+	            tempCategory.children.push({
+	              name: _this3.state.name,
+	              unit: _this3.state.unit,
+	              carb: +_this3.state.carb / +_this3.state.weight,
+	              fat: +_this3.state.fat / +_this3.state.weight,
+	              protein: +_this3.state.protein / +_this3.state.weight,
+	              calories: +_this3.state.cals / +_this3.state.weight
+	            });
+	            return tempCategory;
+	          }
+	          return category;
+	        });
+	        var headers = new Headers();
+	        headers.append('Content-Type', 'application/json');
+	        fetch(this.props.appUrl + '/api/saveDB?json=' + JSON.stringify(newData), { headers: headers, method: 'GET' }).then(function (response) {
+	          if (response.ok) _this3.props.setDisplay('home');else _this3.setState({ fetchError: true });
+	        }).catch(function (error) {
+	          _this3.setState({ fetchError: true });
+	        });
 	      } else this.setState({ isSomethingWrong: true });
 	    }
 	  }, {
@@ -27288,6 +27286,22 @@
 	            _react2.default.createElement(
 	              Item,
 	              null,
+	              'Given Calcories'
+	            ),
+	            _react2.default.createElement(
+	              Item,
+	              null,
+	              _react2.default.createElement('input', { placeholder: 'Calcories', type: 'text', onKeyUp: function onKeyUp(e) {
+	                  return _this4.setDataState('cals', e.target.value);
+	                } })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            ItemContainer,
+	            null,
+	            _react2.default.createElement(
+	              Item,
+	              null,
 	              'Given Carbohydrate'
 	            ),
 	            _react2.default.createElement(
@@ -27343,54 +27357,6 @@
 	              'div',
 	              null,
 	              '* Only g(Gram) Units'
-	            )
-	          ),
-	          _react2.default.createElement(
-	            ItemContainer,
-	            null,
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              'Given Calcories'
-	            ),
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              _react2.default.createElement('input', { placeholder: 'Calcories', type: 'text', onKeyUp: function onKeyUp(e) {
-	                  return _this4.setDataState('cals', e.target.value);
-	                } })
-	            )
-	          ),
-	          _react2.default.createElement(
-	            ItemContainer,
-	            null,
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              'Booky Username'
-	            ),
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              _react2.default.createElement('input', { placeholder: 'Username', type: 'text', onKeyUp: function onKeyUp(e) {
-	                  return _this4.setDataState('username', e.target.value);
-	                } })
-	            )
-	          ),
-	          _react2.default.createElement(
-	            ItemContainer,
-	            null,
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              'Booky password'
-	            ),
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              _react2.default.createElement('input', { placeholder: 'Password', type: 'password', onKeyUp: function onKeyUp(e) {
-	                  return _this4.setDataState('password', e.target.value);
-	                } })
 	            )
 	          )
 	        ),
@@ -27512,23 +27478,21 @@
 	    value: function saveDB() {
 	      var _this3 = this;
 
-	      if (this.state.username === this.state.data.user.username && this.state.password === this.state.data.user.password) {
-	        var isNewDataIsCorrect = true;
-	        if (!this.state.unit) isNewDataIsCorrect = false;
-	        if (!isNaN(this.state.unit)) isNewDataIsCorrect = false;
-	        if (this.state.data.units.includes(this.state.unit)) isNewDataIsCorrect = false;
+	      var isNewDataIsCorrect = true;
+	      if (!this.state.unit) isNewDataIsCorrect = false;
+	      if (!isNaN(this.state.unit)) isNewDataIsCorrect = false;
+	      if (this.state.data.units.includes(this.state.unit)) isNewDataIsCorrect = false;
 
-	        if (isNewDataIsCorrect) {
-	          var newData = _extends({}, this.state.data);
-	          newData.units.push(this.state.unit);
-	          var headers = new Headers();
-	          headers.append('Content-Type', 'application/json');
-	          fetch(this.props.appUrl + '/api/saveDB?json=' + JSON.stringify(newData), { headers: headers, method: 'GET' }).then(function (response) {
-	            if (response.ok) _this3.props.setDisplay('home');else _this3.setState({ fetchError: true });
-	          }).catch(function (error) {
-	            _this3.setState({ fetchError: true });
-	          });
-	        } else this.setState({ isSomethingWrong: true });
+	      if (isNewDataIsCorrect) {
+	        var newData = _extends({}, this.state.data);
+	        newData.units.push(this.state.unit);
+	        var headers = new Headers();
+	        headers.append('Content-Type', 'application/json');
+	        fetch(this.props.appUrl + '/api/saveDB?json=' + JSON.stringify(newData), { headers: headers, method: 'GET' }).then(function (response) {
+	          if (response.ok) _this3.props.setDisplay('home');else _this3.setState({ fetchError: true });
+	        }).catch(function (error) {
+	          _this3.setState({ fetchError: true });
+	        });
 	      } else this.setState({ isSomethingWrong: true });
 	    }
 	  }, {
@@ -27589,38 +27553,6 @@
 	              null,
 	              _react2.default.createElement('input', { placeholder: 'unit', type: 'text', onKeyUp: function onKeyUp(e) {
 	                  return _this4.setDataState('unit', e.target.value);
-	                } })
-	            )
-	          ),
-	          _react2.default.createElement(
-	            ItemContainer,
-	            null,
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              'Username'
-	            ),
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              _react2.default.createElement('input', { placeholder: 'Username', type: 'text', onKeyUp: function onKeyUp(e) {
-	                  return _this4.setDataState('username', e.target.value);
-	                } })
-	            )
-	          ),
-	          _react2.default.createElement(
-	            ItemContainer,
-	            null,
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              'password'
-	            ),
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              _react2.default.createElement('input', { placeholder: 'Password', type: 'password', onKeyUp: function onKeyUp(e) {
-	                  return _this4.setDataState('password', e.target.value);
 	                } })
 	            )
 	          )
@@ -27743,25 +27675,23 @@
 	    value: function saveDB() {
 	      var _this3 = this;
 
-	      if (this.state.username === this.state.data.user.username && this.state.password === this.state.data.user.password) {
-	        var isNewDataIsCorrect = true;
-	        if (!this.state.category) isNewDataIsCorrect = false;
-	        if (!isNaN(this.state.category)) isNewDataIsCorrect = false;
-	        this.state.data.ingredients.forEach(function (category) {
-	          if (category.category === _this3.state.category) isNewDataIsCorrect = false;
-	        });
+	      var isNewDataIsCorrect = true;
+	      if (!this.state.category) isNewDataIsCorrect = false;
+	      if (!isNaN(this.state.category)) isNewDataIsCorrect = false;
+	      this.state.data.ingredients.forEach(function (category) {
+	        if (category.category === _this3.state.category) isNewDataIsCorrect = false;
+	      });
 
-	        if (isNewDataIsCorrect) {
-	          var newData = _extends({}, this.state.data);
-	          newData.ingredients.push({ category: this.state.category, children: [] });
-	          var headers = new Headers();
-	          headers.append('Content-Type', 'application/json');
-	          fetch(this.props.appUrl + '/api/saveDB?json=' + JSON.stringify(newData), { headers: headers, method: 'GET' }).then(function (response) {
-	            if (response.ok) _this3.props.setDisplay('home');else _this3.setState({ fetchError: true });
-	          }).catch(function (error) {
-	            _this3.setState({ fetchError: true });
-	          });
-	        } else this.setState({ isSomethingWrong: true });
+	      if (isNewDataIsCorrect) {
+	        var newData = _extends({}, this.state.data);
+	        newData.ingredients.push({ category: this.state.category, children: [] });
+	        var headers = new Headers();
+	        headers.append('Content-Type', 'application/json');
+	        fetch(this.props.appUrl + '/api/saveDB?json=' + JSON.stringify(newData), { headers: headers, method: 'GET' }).then(function (response) {
+	          if (response.ok) _this3.props.setDisplay('home');else _this3.setState({ fetchError: true });
+	        }).catch(function (error) {
+	          _this3.setState({ fetchError: true });
+	        });
 	      } else this.setState({ isSomethingWrong: true });
 	    }
 	  }, {
@@ -27822,38 +27752,6 @@
 	              null,
 	              _react2.default.createElement('input', { placeholder: 'category', type: 'text', onKeyUp: function onKeyUp(e) {
 	                  return _this4.setDataState('category', e.target.value);
-	                } })
-	            )
-	          ),
-	          _react2.default.createElement(
-	            ItemContainer,
-	            null,
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              'Username'
-	            ),
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              _react2.default.createElement('input', { placeholder: 'Username', type: 'text', onKeyUp: function onKeyUp(e) {
-	                  return _this4.setDataState('username', e.target.value);
-	                } })
-	            )
-	          ),
-	          _react2.default.createElement(
-	            ItemContainer,
-	            null,
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              'password'
-	            ),
-	            _react2.default.createElement(
-	              Item,
-	              null,
-	              _react2.default.createElement('input', { placeholder: 'Password', type: 'password', onKeyUp: function onKeyUp(e) {
-	                  return _this4.setDataState('password', e.target.value);
 	                } })
 	            )
 	          )

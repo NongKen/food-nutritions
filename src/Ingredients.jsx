@@ -64,53 +64,50 @@ class Ingredients extends Component {
   }
 
   saveDB() {
-    if (this.state.username === this.state.data.user.username && this.state.password === this.state.data.user.password) {
-      let isNewDataIsCorrect = true
-      if (!this.state.category) isNewDataIsCorrect = false
-      if (!this.state.name) isNewDataIsCorrect = false
-      if (!this.state.unit) isNewDataIsCorrect = false
-      if (!(+this.state.weight)) isNewDataIsCorrect = false
+    let isNewDataIsCorrect = true
+    if (!this.state.category) isNewDataIsCorrect = false
+    if (!this.state.name) isNewDataIsCorrect = false
+    if (!this.state.unit) isNewDataIsCorrect = false
+    if (!(+this.state.weight)) isNewDataIsCorrect = false
 
-      if (!isNaN(this.state.category)) isNewDataIsCorrect = false
-      if (!isNaN(this.state.name)) isNewDataIsCorrect = false
-      if (!isNaN(this.state.unit)) isNewDataIsCorrect = false
-      if (isNaN(this.state.weight)) isNewDataIsCorrect = false
-      if (isNaN(this.state.carb)) isNewDataIsCorrect = false
-      if (isNaN(this.state.protein)) isNewDataIsCorrect = false
-      if (isNaN(this.state.fat)) isNewDataIsCorrect = false
-      if (isNaN(this.state.cals)) isNewDataIsCorrect = false
+    if (!isNaN(this.state.category)) isNewDataIsCorrect = false
+    if (!isNaN(this.state.name)) isNewDataIsCorrect = false
+    if (!isNaN(this.state.unit)) isNewDataIsCorrect = false
+    if (isNaN(this.state.weight)) isNewDataIsCorrect = false
+    if (isNaN(this.state.carb)) isNewDataIsCorrect = false
+    if (isNaN(this.state.protein)) isNewDataIsCorrect = false
+    if (isNaN(this.state.fat)) isNewDataIsCorrect = false
+    if (isNaN(this.state.cals)) isNewDataIsCorrect = false
+    
+
+    if (isNewDataIsCorrect) {
+      const newData = { ...this.state.data }
       
-
-      if (isNewDataIsCorrect) {
-        const newData = { ...this.state.data }
-        
-        newData.ingredients = newData.ingredients.map((category, index) => {
-          if (category.category === this.state.category) {
-            const tempCategory = {...category}
-            tempCategory.children.push({
-              name: this.state.name,
-              unit: this.state.unit,
-              carb: (+this.state.carb / +this.state.weight),
-              fat: (+this.state.fat / +this.state.weight),
-              protein: (+this.state.protein / +this.state.weight),
-              calories: (+this.state.cals  / +this.state.weight),
-            })
-            return tempCategory
-          }
-          return category
-        })
-        const headers = new Headers()
-        headers.append('Content-Type', 'application/json')
-        fetch(`${this.props.appUrl}/api/saveDB?json=${JSON.stringify(newData)}`, { headers, method: 'GET' })
-        .then((response) => {
-          if(response.ok) this.props.setDisplay('home')
-          else this.setState({fetchError: true})
-        })
-        .catch((error) => {
-          this.setState({fetchError: true})
-        })
-      }
-      else this.setState({isSomethingWrong: true})
+      newData.ingredients = newData.ingredients.map((category, index) => {
+        if (category.category === this.state.category) {
+          const tempCategory = {...category}
+          tempCategory.children.push({
+            name: this.state.name,
+            unit: this.state.unit,
+            carb: (+this.state.carb / +this.state.weight),
+            fat: (+this.state.fat / +this.state.weight),
+            protein: (+this.state.protein / +this.state.weight),
+            calories: (+this.state.cals  / +this.state.weight),
+          })
+          return tempCategory
+        }
+        return category
+      })
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      fetch(`${this.props.appUrl}/api/saveDB?json=${JSON.stringify(newData)}`, { headers, method: 'GET' })
+      .then((response) => {
+        if(response.ok) this.props.setDisplay('home')
+        else this.setState({fetchError: true})
+      })
+      .catch((error) => {
+        this.setState({fetchError: true})
+      })
     }
     else this.setState({isSomethingWrong: true})
   }
@@ -181,6 +178,14 @@ class Ingredients extends Component {
           </ItemContainer>
           <ItemContainer>
             <Item>
+              Given Calcories
+            </Item>
+            <Item>
+              <input placeholder={'Calcories'} type="text" onKeyUp={(e) => this.setDataState('cals', e.target.value)}/>
+            </Item>
+          </ItemContainer>
+          <ItemContainer>
+            <Item>
               Given Carbohydrate
             </Item>
             <Item>
@@ -211,30 +216,6 @@ class Ingredients extends Component {
             <div>
               * Only g(Gram) Units
             </div>
-          </ItemContainer>
-          <ItemContainer>
-            <Item>
-              Given Calcories
-            </Item>
-            <Item>
-              <input placeholder={'Calcories'} type="text" onKeyUp={(e) => this.setDataState('cals', e.target.value)}/>
-            </Item>
-          </ItemContainer>
-          <ItemContainer>
-            <Item>
-              Booky Username
-            </Item>
-            <Item>
-              <input placeholder={'Username'} type="text" onKeyUp={(e) => this.setDataState('username', e.target.value)}/>
-            </Item>
-          </ItemContainer>
-          <ItemContainer>
-            <Item>
-              Booky password
-            </Item>
-            <Item>
-              <input placeholder={'Password'} type="password" onKeyUp={(e) => this.setDataState('password', e.target.value)}/>
-            </Item>
           </ItemContainer>
         </FormContainer>
         <div>

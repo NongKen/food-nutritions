@@ -4,7 +4,7 @@ import styled, {injectGlobal} from 'styled-components'
 
 import App from './App'
 
-const appUrl = 'https://booky-program.herokuapp.com'
+const appUrl = 'https://booky-proram.appspot.com'
 
 injectGlobal`
   body { margin: 0;}
